@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "94089620030",
+    "project_id": "beritasttb",
+    "storage_bucket": "beritasttb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94089620030:android:f27ac974558957a2cabf6f",
+        "android_client_info": {
+          "package_name": "id.beritasttb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94089620030-tbf3nvnue4aedndv1elhouplrbtn0ohf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpWo6Dt9oFQo_qhdueFUEqGHGFHiTz6rI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94089620030-tbf3nvnue4aedndv1elhouplrbtn0ohf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
