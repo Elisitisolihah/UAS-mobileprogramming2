@@ -4,6 +4,7 @@ import 'package:beritasttb/widget/card_item.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:beritasttb/widget/card_item.dart';
+
 class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -52,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditItemPage(),
+                          builder: (context) => EditItemPage(item: null),
                         ),
                       );
                     },
@@ -81,12 +82,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   return ListView(
                     scrollDirection: Axis.horizontal,
                     children: snapshot.data.docs.map((document) {
-                    Item item = Item(
-                      id: document['id'],
-                      name: document['name'],
-                      desc: document['desc'],
-                      status: document['status'],
-                      image: document['image'],
+                      Item item = Item(
+                        id: document['id'],
+                        name: document['name'],
+                        desc: document['desc'],
+                        status: document['status'],
+                        qty: document['qty'],
+                        image: document['image'],
                       );
                       return InkWell(
                         child: CardItem(item: item),
@@ -94,8 +96,10 @@ class _DashboardPageState extends State<DashboardPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditItemPage(),
-                            ),
+                                builder: (context) => EditItemPage(
+                                      item: item,
+                                      id: document.id,
+                                    )),
                           );
                         },
                       );

@@ -54,6 +54,17 @@ class _CardItemState extends State<CardItem> {
               maxLines: 3,
             ),
           ),
+
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                widget.item.qty.toString(),
+                style: TextStyle(fontSize: 12, color: Colors.black),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:beritasttb/model/item.dart';
 
 class EditItemPage extends StatefulWidget {
-  EditItemPage();
+  final Item item;
+  final String id;
+  EditItemPage({@required this.item, this.id});
 
   @override
   _EditItemPageState createState() => _EditItemPageState();
@@ -29,6 +31,11 @@ class _EditItemPageState extends State<EditItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.item != null){
+      nameController.text = widget.item.name;
+    descController.text = widget.item.desc;
+    qtyController.text = widget.item.qty.toString();
+    }
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: 25),
@@ -129,17 +136,49 @@ class _EditItemPageState extends State<EditItemPage> {
                     ),
                     onPressed: () {
                       Item item = Item(
-                      id: 'S99',
-                      name: nameController.text,
-                      desc: descController.text,
-                      status: '',
-                      image: ','
+                        id: 'S-0',
+                        name: nameController.text,
+                        desc: descController.text,
+                        qty: int.parse(qtyController.text),
+                        status: '',
+                        image: '',
                       );
+                      if(widget.item != null){
+
                       FirebaseFirestore.instance
                           .collection('item')
-                          .add({});
+                          .doc(widget.id)
+                          .update(item.toJson());
                       Navigator.pop(context);
+                      }else{
+
+                      FirebaseFirestore.instance
+                          .collection('item')
+                          .add(item.toJson());
+                      Navigator.pop(context);
+                      }
                     },
+                  ),
+                  Visibility(
+                    visible: widget.item != null ? true : false,
+                                      child: FlatButton(
+                      height: 45,
+                      color: Colors.red,
+                      child: Text(
+                        'Delete',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                      onPressed: () {
+                        FirebaseFirestore.instance
+                          .collection('item')
+                          .doc(widget.id)
+                          .delete();
+                      Navigator.pop(context);
+                      },
+                    ),
                   ),
                 ],
               ),
