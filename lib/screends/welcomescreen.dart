@@ -3,12 +3,14 @@ import 'package:beritasttb/screends/Loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-class HyHomePage extends StatelessWidget {
+import 'onboarding_screen.dart';
+
+class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(Duration(milliseconds: 4000), () {
       Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => Loginscreen()));
+          context, MaterialPageRoute(builder: (ctx) => OnboardingScreen()));
     });
 
     return Scaffold(

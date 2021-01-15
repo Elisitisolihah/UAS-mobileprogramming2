@@ -1,6 +1,8 @@
+import 'package:beritasttb/screends/Loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:beritasttb/costumwidget/styles.dart';
+
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -39,18 +41,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         value: SystemUiOverlayStyle.light,
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.1, 0.4, 0.7, 0.9],
-              colors: [
-                Color(0xFF3594DD),
-                Color(0xFF4563DB),
-                Color(0xFF5036D5),
-                Color(0xFF5B16D0),
-              ],
-            ),
-          ),
+              gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.blue[400]],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter),
+              image: DecorationImage(
+                  image: AssetImage('asset/image/background.png'),
+                  fit: BoxFit.cover)),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 40.0),
             child: Column(
@@ -213,7 +210,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               width: double.infinity,
               color: Colors.white,
               child: GestureDetector(
-                onTap: () => print('Get started'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (ctx) => Loginscreen()));
+                },
                 child: Center(
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 30.0),
