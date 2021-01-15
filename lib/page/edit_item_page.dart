@@ -31,10 +31,10 @@ class _EditItemPageState extends State<EditItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.item != null){
+    if (widget.item != null) {
       nameController.text = widget.item.name;
-    descController.text = widget.item.desc;
-    qtyController.text = widget.item.qty.toString();
+      descController.text = widget.item.desc;
+      qtyController.text = widget.item.qty.toString();
     }
     return Scaffold(
       body: Container(
@@ -143,25 +143,23 @@ class _EditItemPageState extends State<EditItemPage> {
                         status: '',
                         image: '',
                       );
-                      if(widget.item != null){
-
-                      FirebaseFirestore.instance
-                          .collection('item')
-                          .doc(widget.id)
-                          .update(item.toJson());
-                      Navigator.pop(context);
-                      }else{
-
-                      FirebaseFirestore.instance
-                          .collection('item')
-                          .add(item.toJson());
-                      Navigator.pop(context);
+                      if (widget.item != null) {
+                        FirebaseFirestore.instance
+                            .collection('item')
+                            .doc(widget.id)
+                            .update(item.toJson());
+                        Navigator.pop(context);
+                      } else {
+                        FirebaseFirestore.instance
+                            .collection('item')
+                            .add(item.toJson());
+                        Navigator.pop(context);
                       }
                     },
                   ),
                   Visibility(
                     visible: widget.item != null ? true : false,
-                                      child: FlatButton(
+                    child: FlatButton(
                       height: 45,
                       color: Colors.red,
                       child: Text(
@@ -173,10 +171,10 @@ class _EditItemPageState extends State<EditItemPage> {
                       ),
                       onPressed: () {
                         FirebaseFirestore.instance
-                          .collection('item')
-                          .doc(widget.id)
-                          .delete();
-                      Navigator.pop(context);
+                            .collection('item')
+                            .doc(widget.id)
+                            .delete();
+                        Navigator.pop(context);
                       },
                     ),
                   ),
