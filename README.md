@@ -3,6 +3,6 @@
 Tugas Besar 
 
 # Mobile Programing 2
-Ketua : Krisna Ardi Sugiarto
+Ketua : Krisna 
 Anggota :- Fikri
           - Eli
