@@ -1,10 +1,10 @@
 import 'package:beritasttb/model/item.dart';
-import 'package:beritasttb/page/edit_item_page.dart';
+import 'package:beritasttb/provider/item_provider.dart';
 import 'package:beritasttb/widget/card_item.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:beritasttb/widget/card_item.dart';
+import 'package:provider/provider.dart';
 
+import 'edit_item_page.dart';
 class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -18,6 +18,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Item> listItem = Provider.of<List<Item>>(context);
+    //List<Item> listItem = ItemProvider.minQtyList(Provider.of<List<Item>>(context));
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(
@@ -53,7 +56,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditItemPage(item: null),
+                          builder: (context) => EditItemPage(
+                            item: null,
+                          ),
                         ),
                       );
                     },
@@ -69,44 +74,69 @@ class _DashboardPageState extends State<DashboardPage> {
               height: 260,
               padding: EdgeInsets.all(5),
               color: Colors.blue,
-              child: StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('item').snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: snapshot.data.docs.map((document) {
-                      Item item = Item(
-                        id: document['id'],
-                        name: document['name'],
-                        desc: document['desc'],
-                        status: document['status'],
-                        qty: document['qty'],
-                        image: document['image'],
-                      );
-                      return InkWell(
-                        child: CardItem(item: item),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditItemPage(
-                                      item: item,
-                                      id: document.id,
-                                    )),
-                          );
-                        },
-                      );
-                    }).toList(),
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: listItem.length,
+                itemBuilder: (BuildContext buildContext, int index) {
+                  return InkWell(
+                      child: CardItem(item: listItem[index]),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditItemPage(
+                              item: listItem[index],
+                              id: listItem[index].id,
+                            ),
+                          ),
+                        );
+                      });
+                },
+                separatorBuilder: (BuildContext buildContext, int index) {
+                  return SizedBox(
+                    width: 10,
                   );
                 },
               ),
+              // child: StreamBuilder(
+              //   stream:
+              //       FirebaseFirestore.instance.collection('item').where('qty', isGreaterThan: 10).snapshots(),
+              //   builder: (BuildContext context,
+              //       AsyncSnapshot<QuerySnapshot> snapshot) {
+              //     if (!snapshot.hasData) {
+              //       return Center(
+              //         child: CircularProgressIndicator(),
+              //       );
+              //     }
+              //     return ListView(
+              //       scrollDirection: Axis.horizontal,
+              //       children: snapshot.data.docs.map((document) {
+              //         Item item = Item(
+              //           id: document['id'],
+              //           name: document['name'],
+              //           image: document['image'],
+              //           desc: document['desc'],
+              //           qty: document['qty'],
+              //           status: document['status'],
+              //         );
+              //         return InkWell(
+              //           child: CardItem(item: item),
+              //           onTap: () {
+              //             Navigator.push(
+              //               context,
+              //               MaterialPageRoute(
+              //                 builder: (context) => EditItemPage(
+              //                   item: item,
+              //                   id: document.id,
+              //                 ),
+              //               ),
+              //             );
+              //           },
+              //         );
+              //       }).toList(),
+              //     );
+              //   },
+              // ),
             ),
           ],
         ),

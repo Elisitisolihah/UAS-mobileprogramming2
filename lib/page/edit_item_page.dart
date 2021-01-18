@@ -1,8 +1,11 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:beritasttb/model/item.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:beritasttb/model/item.dart';
+import 'package:social_share/social_share.dart';
 class EditItemPage extends StatefulWidget {
   final Item item;
   final String id;
@@ -36,6 +39,7 @@ class _EditItemPageState extends State<EditItemPage> {
       descController.text = widget.item.desc;
       qtyController.text = widget.item.qty.toString();
     }
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: 25),
@@ -72,6 +76,21 @@ class _EditItemPageState extends State<EditItemPage> {
                       },
                     ),
                   ),
+                  widget.item != null && image != null
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            child: Padding(
+                              padding: EdgeInsets.all(5),
+                              child: Icon(Icons.share),
+                            ),
+                            onTap: () async {
+                              SocialShare.shareInstagramStory(image.path,
+                                  "#ffffff", "#000000", "https://google.com");
+                            },
+                          ),
+                        )
+                      : SizedBox(),
                 ],
               ),
             ),
@@ -87,6 +106,31 @@ class _EditItemPageState extends State<EditItemPage> {
                   right: 10,
                 ),
                 children: [
+                  Container(
+                    height: 150,
+                    child: Center(
+                      child: InkWell(
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.grey,
+                          child: CircleAvatar(
+                            radius: 59,
+                            backgroundColor: Colors.white,
+                            backgroundImage: image != null
+                                ? FileImage(image)
+                                : widget.item != null
+                                    ? widget.item.image.isNotEmpty
+                                        ? NetworkImage(widget.item.image)
+                                        : AssetImage('asset/image/poto.jpg')
+                                    : AssetImage('asset/image/poto.jpg'),
+                          ),
+                        ),
+                        onTap: () {
+                          getImage(context);
+                        },
+                      ),
+                    ),
+                  ),
                   TextField(
                     controller: nameController,
                     textAlignVertical: TextAlignVertical.center,
@@ -134,27 +178,33 @@ class _EditItemPageState extends State<EditItemPage> {
                         fontSize: 14,
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      String randomMillis =
+                          DateTime.now().millisecondsSinceEpoch.toString();
                       Item item = Item(
-                        id: 'S-0',
+                        id: widget.item != null ? widget.item.id : randomMillis,
                         name: nameController.text,
+                        image: image != null
+                            ? widget.item != null
+                                ? await uploadFile(image, widget.id)
+                                : await uploadFile(image, randomMillis)
+                            : '',
                         desc: descController.text,
                         qty: int.parse(qtyController.text),
                         status: '',
-                        image: '',
                       );
-                      if (widget.item != null) {
+                      if (widget.item == null) {
+                        FirebaseFirestore.instance
+                            .collection('item')
+                            .doc(randomMillis)
+                            .set(item.toJson());
+                      } else {
                         FirebaseFirestore.instance
                             .collection('item')
                             .doc(widget.id)
                             .update(item.toJson());
-                        Navigator.pop(context);
-                      } else {
-                        FirebaseFirestore.instance
-                            .collection('item')
-                            .add(item.toJson());
-                        Navigator.pop(context);
                       }
+                      Navigator.pop(context);
                     },
                   ),
                   Visibility(
@@ -185,5 +235,61 @@ class _EditItemPageState extends State<EditItemPage> {
         ),
       ),
     );
+  }
+
+  imgFromCamera() async {
+    PickedFile imgCamera = await ImagePicker()
+        .getImage(source: ImageSource.camera, imageQuality: 50);
+    setState(() {
+      image = File(imgCamera.path);
+    });
+  }
+
+  imgFromGallery() async {
+    PickedFile imgGallery = await ImagePicker()
+        .getImage(source: ImageSource.gallery, imageQuality: 50);
+    setState(() {
+      image = File(imgGallery.path);
+    });
+  }
+
+  getImage(context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Container(
+            child: Wrap(
+              children: <Widget>[
+                ListTile(
+                    leading: Icon(Icons.photo_library),
+                    title: Text('Gallery'),
+                    onTap: () {
+                      imgFromGallery();
+                      Navigator.of(context).pop();
+                    }),
+                ListTile(
+                  leading: Icon(Icons.photo_camera),
+                  title: Text('Camera'),
+                  onTap: () {
+                    imgFromCamera();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String> uploadFile(File image, String filename) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference ref = storage.ref().child("item/" + filename);
+    UploadTask uploadTask = ref.putFile(image);
+    return uploadTask.then((res) async {
+      return await res.ref.getDownloadURL();
+    });
   }
 }

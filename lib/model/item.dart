@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Item {
   final String id;
   final String name;
@@ -34,5 +36,16 @@ class Item {
         'qty': qty,
         'status': status,
       };
+
+      factory Item.fromFireStore(DocumentSnapshot doc) {
+    return Item(
+      id: doc['id'],
+      name: doc['name'],
+      image: doc['image'],
+      desc: doc['desc'],
+      qty: doc['qty'],
+      status: doc['status'],
+    );
+  }
 }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:beritasttb/screends/Loginscreen.dart';
+import 'package:beritasttb/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -10,7 +11,7 @@ class Splash extends StatelessWidget {
   Widget build(BuildContext context) {
     Timer(Duration(milliseconds: 4000), () {
       Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => OnboardingScreen()));
+          context, MaterialPageRoute(builder: (ctx) => Wrapper()));
     });
 
     return Scaffold(
